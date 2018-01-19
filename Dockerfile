@@ -20,6 +20,9 @@ RUN mkdir -p ${APP_DIR} && \
 ADD docker-entrypoint.sh ${APP_DIR}/docker-entrypoint.sh
 RUN chown python:python ${APP_DIR}/docker-entrypoint.sh
 
+ADD .bashrc /home/python/.bashrc
+RUN chown python:python /home/python/.bashrc
+
 USER python
 
 WORKDIR ${APP_DIR}
