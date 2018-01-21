@@ -13,7 +13,7 @@ services:
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "true"
   python:
-    build: .
+    image: h3poteto/python:3.6.4
     links:
       - mysql:mysql
     ports:
