@@ -14,6 +14,8 @@ services:
       MYSQL_ALLOW_EMPTY_PASSWORD: "true"
   python:
     image: h3poteto/python:3.6.4
+    environment:
+      GOOGLE_DEVELOPER_KEY: $GOOGLE_DEVELOPER_KEY
     links:
       - mysql:mysql
     ports:
