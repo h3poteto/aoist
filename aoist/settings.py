@@ -82,6 +82,9 @@ DATABASES = {
         'HOST': 'mysql',
         'USER': 'root',
         'PORT': '3306',
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+        },
         'TEST': {
             'NAME': 'aoist_test',
             'CHARSET': 'utf8mb4',

@@ -1,11 +1,19 @@
 import os
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from movie.models.youtube import Youtube
+from django.db.utils import IntegrityError
+
 
 def run():
     api = YoutubeAPI()
-    result = api.all_search("悠木碧")
-    print(result)
+    results = api.all_search("悠木碧")
+    for result in results:
+        try:
+            result.save()
+        except IntegrityError:
+            print("Save error: %s" % result.__dict__.values())
+
 
 class YoutubeAPI:
     DEVELOPER_KEY = os.getenv("GOOGLE_DEVELOPER_KEY", "")
@@ -38,8 +46,8 @@ class YoutubeAPI:
         for result in response.get('items', []):
             if result['id']['kind'] != 'youtube#video':
                 continue
-            y = Youtube(
-                id = result['id']['videoId'],
+            y = YoutubeMovie(
+                result['id']['videoId'],
                 title = result['snippet']['title'],
                 description = result['snippet']['description'],
                 thumbnail = result['snippet']['thumbnails']['default'].get('url', ''),
@@ -49,9 +57,23 @@ class YoutubeAPI:
 
 
 
-class Youtube:
-    def __init__(self, id='', title='', description='', thumbnail=''):
-        self.id = id,
-        self.title = title,
+class YoutubeMovie:
+    def __init__(self, id, title='', description='', thumbnail=''):
+        self.id = id
+        self.url = "https://www.youtube.com/watch?v=" + str(self.id)
+        self.title = title
         self.description = description
         self.thumbnail = thumbnail
+
+    def __str__(self):
+        self.id
+
+    def save(self):
+        y = Youtube(
+            movie_id = self.id,
+            title = self.title,
+            description = self.description,
+            url = self.url,
+            thumbnail = self.thumbnail,
+        )
+        y.save()
